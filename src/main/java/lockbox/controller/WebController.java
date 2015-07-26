@@ -7,6 +7,7 @@ import lockbox.service.management.FileInfo;
 import lockbox.service.management.FileManagementService;
 import lockbox.service.management.exception.InvalidPasswordException;
 import lockbox.service.management.exception.LinkExpiredException;
+import lockbox.util.HttpResponseUtil;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -28,6 +29,9 @@ public class WebController extends WebMvcConfigurerAdapter {
 
     @Autowired
     FileManagementService managementService;
+
+    @Autowired
+    HttpResponseUtil httpResponseUtil;
 
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String showUpload(UploadFormModel uploadFormModel) {
@@ -73,11 +77,13 @@ public class WebController extends WebMvcConfigurerAdapter {
                          HttpServletResponse response) throws Exception {
         try {
             FileDownload fileDownload = managementService.download(publicId, password);
-            response.setContentType(fileDownload.getFileType());
-            response.setContentLength((int) fileDownload.getFileSize());
-            response.setHeader("content-disposition", "attachment; filename=" + fileDownload.getFileName());
-            IOUtils.copy(fileDownload.getStream(), response.getOutputStream());
-            response.flushBuffer();
+            httpResponseUtil.writeFile(
+                    response,
+                    fileDownload.getStream(),
+                    fileDownload.getFileName(),
+                    fileDownload.getFileType(),
+                    (int) fileDownload.getFileSize());
+
             return null;
         } catch(InvalidPasswordException e) {
             FileInfo fileInfo = managementService.info(publicId);
