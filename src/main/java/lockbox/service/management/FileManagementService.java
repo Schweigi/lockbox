@@ -8,6 +8,7 @@ import lockbox.service.management.exception.LinkExpiredException;
 import lockbox.service.storage.FileStorageService;
 import lockbox.util.EncryptionKey;
 import lockbox.util.EncryptionUtil;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.keygen.KeyGenerators;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -23,6 +24,9 @@ import java.time.Instant;
 
 @Service
 public class FileManagementService {
+
+    @Autowired
+    Logger logger;
 
     @Autowired
     private SharedLinkRepository sharedLinkRepository;
@@ -42,6 +46,8 @@ public class FileManagementService {
             InputStream encryptedStream = encryptionUtil.encryptStream(inputStream, key);
             String storedFileId = storageService.save(encryptedStream);
             SharedLinkModel sharedLink = saveSharedLink(fileName, fileType, fileSize, password, storedFileId, key);
+
+            logger.info(String.format("Upload %s with id %s", fileName, sharedLink.getId()));
 
             return sharedLink.getPublicId();
         } catch (NoSuchAlgorithmException|InvalidKeyException|NoSuchPaddingException|InvalidAlgorithmParameterException e) {
@@ -70,8 +76,10 @@ public class FileManagementService {
         SharedLinkModel sharedLink = sharedLinkRepository.findByPublicId(publicId);
 
         if (sharedLink == null) {
+            logger.info(String.format("Download %s is expired", publicId));
             throw new LinkExpiredException();
         } else if (sharedLink.getPassword() != null && (password == null || !passwordEncoder.matches(password, sharedLink.getPassword()))) {
+            logger.info(String.format("Invalid password for download %s", sharedLink.getId()));
             throw new InvalidPasswordException();
         } else {
             try {
@@ -79,8 +87,11 @@ public class FileManagementService {
                 InputStream encryptedStream = storageService.load(sharedLink.getStorageId());
                 InputStream stream = encryptionUtil.decryptStream(encryptedStream, key);
 
+                logger.info(String.format("Download %s", sharedLink.getId()));
+
                 return new FileDownload(stream, sharedLink.getFileName(), sharedLink.getFileType(), sharedLink.getFileSize());
             } catch(FileNotFoundException e) {
+                logger.info(String.format("File for download %s is missing", sharedLink.getId()));
                 throw new LinkExpiredException();
             } catch (NoSuchAlgorithmException|InvalidKeyException|NoSuchPaddingException|InvalidAlgorithmParameterException e) {
                 throw new EncryptionException(e);

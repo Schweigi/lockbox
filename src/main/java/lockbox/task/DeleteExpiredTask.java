@@ -3,6 +3,7 @@ package lockbox.task;
 import lockbox.domain.model.SharedLinkModel;
 import lockbox.domain.repository.SharedLinkRepository;
 import lockbox.service.storage.FileStorageService;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.env.Environment;
 import org.springframework.scheduling.annotation.Scheduled;
@@ -15,10 +16,13 @@ import java.util.List;
 @Component
 public class DeleteExpiredTask {
 
-    public static final String MAX_AGE = "lockbox.files.maxage";
+    private static final String MAX_AGE = "lockbox.files.maxage";
 
     @Autowired
     Environment env;
+
+    @Autowired
+    Logger logger;
 
     @Autowired
     private SharedLinkRepository sharedLinkRepository;
@@ -28,6 +32,8 @@ public class DeleteExpiredTask {
 
     @Scheduled(fixedRate = 3600 * 1000)
     public void deleteExpired() {
+        logger.info("Run delete expired task");
+
         int maxAge = Integer.parseInt(env.getProperty(MAX_AGE));
         Instant expired = Instant.now().minus(maxAge, ChronoUnit.HOURS);
         List<SharedLinkModel> links = sharedLinkRepository.findByCreatedBefore(expired);
