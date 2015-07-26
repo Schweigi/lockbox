@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lockbox</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/3.3.5/css/bootstrap.min.css" />
+</head>
+<body>
+    <nav class="navbar navbar-default" style="border-radius: 0">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" th:href="@{/}">Lockbox</a>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3" style="text-align: center">
+                <h1>Lockbox</h1>
+                <p>Secure file sharing for everyone</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3">
+                <form th:action="@{/}" th:object="${uploadFormModel}" method="post" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="fileField">1. Select file to share</label>
+                        <input type="file" id="fileField" th:field="*{file}" />
+                        <p th:if="${#fields.hasErrors('file')}" th:errors="*{file}" class="text-danger">Please specify a valid file.</p>
+                        <p class="help-block">Max 10MB. File will be deleted after 24h.</p>
+                    </div>
+                    <div class="form-group">
+                        <label for="passwordField">2. Secure link with a password (optional)</label>
+                        <input type="password" class="form-control" id="passwordField" th:field="*{password}" placeholder="Password" />
+                    </div>
+                    <button type="submit" class="btn btn-default">Upload</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script src="/webjars/jquery/2.1.4/jquery.min.js"></script>
+    <script src="/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</body>
+</html>

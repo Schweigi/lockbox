@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Lockbox</title>
+    <link rel="stylesheet" type="text/css" href="/webjars/bootstrap/3.3.5/css/bootstrap.min.css" />
+</head>
+<body>
+    <nav class="navbar navbar-default" style="border-radius: 0">
+        <div class="container-fluid">
+            <div class="navbar-header">
+                <a class="navbar-brand" th:href="@{/}">Lockbox</a>
+            </div>
+        </div>
+    </nav>
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 col-md-offset-3" style="text-align: center">
+                <h1>Lockbox</h1>
+                <p>File has expired and is not available anymore!</p>
+                <p>
+                    <small><a th:href="@{/}">Upload another file</a></small>
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script src="/webjars/jquery/2.1.4/jquery.min.js"></script>
+    <script src="/webjars/bootstrap/3.3.5/js/bootstrap.min.js"></script>
+</body>
+</html>

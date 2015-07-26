@@ -29,9 +29,12 @@ dependencies {
     }
     compile("org.springframework.boot:spring-boot-starter-undertow")
     compile("org.springframework.boot:spring-boot-starter-security")
+    compile("org.springframework.boot:spring-boot-starter-thymeleaf")
     compile("org.springframework.boot:spring-boot-starter-data-mongodb")
     compile("org.springframework.data:spring-data-mongodb:1.7.1.RELEASE")
     compile("org.apache.directory.studio:org.apache.commons.io:2.4")
+    compile("org.webjars:jquery:2.1.4")
+    compile("org.webjars:bootstrap:3.3.5")
     testCompile("junit:junit")
 }
 

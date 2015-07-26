@@ -56,7 +56,7 @@ public class FileManagementService {
     }
 
     private SharedLinkModel saveSharedLink(String fileName, String fileType, long fileSize, String password, String storageId, EncryptionKey key) {
-        String hashedPassword = password == null ? null: passwordEncoder.encode(password);
+        String hashedPassword = password == null || "".equals(password) ? null: passwordEncoder.encode(password);
         String publicId = KeyGenerators.string().generateKey();
 
         SharedLinkModel metaData = new SharedLinkModel();
@@ -72,11 +72,24 @@ public class FileManagementService {
         return sharedLinkRepository.save(metaData);
     }
 
+    public FileInfo info(String publicId) throws LinkExpiredException {
+        SharedLinkModel sharedLink = sharedLinkRepository.findByPublicId(publicId);
+
+        if (sharedLink == null) {
+            logger.info(String.format("Link %s is expired", publicId));
+            throw new LinkExpiredException();
+        } else {
+            logger.info(String.format("Info %s", sharedLink.getId()));
+
+            return new FileInfo(sharedLink.getFileName(), sharedLink.getFileSize(), sharedLink.getPassword() != null);
+        }
+    }
+
     public FileDownload download(String publicId, String password) throws InvalidPasswordException, LinkExpiredException, EncryptionException {
         SharedLinkModel sharedLink = sharedLinkRepository.findByPublicId(publicId);
 
         if (sharedLink == null) {
-            logger.info(String.format("Download %s is expired", publicId));
+            logger.info(String.format("Link %s is expired", publicId));
             throw new LinkExpiredException();
         } else if (sharedLink.getPassword() != null && (password == null || !passwordEncoder.matches(password, sharedLink.getPassword()))) {
             logger.info(String.format("Invalid password for download %s", sharedLink.getId()));
