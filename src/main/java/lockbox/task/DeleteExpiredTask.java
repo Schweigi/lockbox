@@ -19,10 +19,10 @@ public class DeleteExpiredTask {
     private static final String MAX_AGE = "lockbox.files.maxage";
 
     @Autowired
-    Environment env;
+    private Environment env;
 
     @Autowired
-    Logger logger;
+    private Logger logger;
 
     @Autowired
     private SharedLinkRepository sharedLinkRepository;

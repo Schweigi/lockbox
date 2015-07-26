@@ -26,7 +26,7 @@ import java.time.Instant;
 public class FileManagementService {
 
     @Autowired
-    Logger logger;
+    private Logger logger;
 
     @Autowired
     private SharedLinkRepository sharedLinkRepository;
