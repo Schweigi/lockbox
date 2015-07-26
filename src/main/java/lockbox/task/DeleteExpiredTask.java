@@ -17,6 +17,7 @@ import java.util.List;
 public class DeleteExpiredTask {
 
     private static final String MAX_AGE = "lockbox.files.maxage";
+    private static final int ONE_HOUR = 3600 * 1000;
 
     @Autowired
     private Environment env;
@@ -30,7 +31,7 @@ public class DeleteExpiredTask {
     @Autowired
     private FileStorageService storageService;
 
-    @Scheduled(fixedRate = 3600 * 1000)
+    @Scheduled(fixedRate = ONE_HOUR)
     public void deleteExpired() {
         logger.info("Run delete expired task");
 
