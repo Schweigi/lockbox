@@ -117,6 +117,7 @@ Lockbox implements error handling by returning the appropriate HTTP error code o
 
 Nevertheless, there are still some TODOs:
 - Show a 404 error page to inform the user and guide him to a valid page.
+- Show a error message if the file is bigger than 10MB. Currently no error is shown.
 - Show a nice error page/message in case the data storage is not reachable or there is another internal error.
 - Use a CDN like CloudFlare to display an "offline" message in case Lockbox is completely unreachable.
 
@@ -125,6 +126,7 @@ The following security enhancement would be necessary for productive usage:
 
 - Currently, each file is encrypted with an individual key and those keys are stored inside the DB. In case the DB is compromised it would be better to encrypt them additionally with a master key. This master key could be injected into the application server on start (stored in memory only). 
 - Proper CSRF handling for the upload form (Web UI).
+- Limit user input size. E.g. limit max. password field length on the server.
 - Protect the file uploads with a captcha to prevent bots from uploading files.
 - Limit the number of requests by IP, session or even by requiring user accounts.
 - In case a link is secured with a password, this password should have a minimal length.
