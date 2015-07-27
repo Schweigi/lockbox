@@ -53,6 +53,13 @@ git push heroku master
 
 That's it!
 
+### Testing
+In order to run the tests, you need to have a local MongoDB instance. Specify the connection string in the "Test" application.properties file and run the tests with:
+
+```
+./gradlew test
+```
+
 ## Usage
 
 ### Web Interface
